@@ -7,7 +7,46 @@ It uses git to track the versions of the project, and it uses rsync to combine t
 
 Unlike other deployment tools, this doesn't allow developers to push changes onto client sites, but instead allows them to pull down changes when they desire.
 
-## Usage
+## Quick start
+### Making a workspace
+#### Add the script
+Include the `trt.sh` file in your empty project directory.
+
+#### Initalize the workspace
+Run `./trt.sh -i` to create the `/dev` and `/stable` folders, as well as the default configuration files.
+
+### Adding dependencies
+#### Edit the repos file
+Edit `.trt/repos` and include the absolute path to the directory you want to include.
+For example:
+```
+/home/username/workshop/foobar_project/stable
+/home/username/workshop/baz_project/stable
+/home/username/workshop/test_project/dev
+
+```
+
+#### Download the files
+Run `./trt.sh -u` to rsync the files from the dependencies into the `/dev` folder.
+
+#### Ignore locally-overwritten files
+If you overwrite a depenency's file (such as an index.html page included by a framework), add it to `.trt/ignores` and it won't be overwritten by future updates.
+For example:
+```
+index.html
+config/database.ini
+
+```
+
+### Updating the /stable folder
+#### Develop in /dev
+Do the development work in the `/dev` folder, and commit changes to that folder's local git repo.
+
+#### Synchronize the folders
+When the code in `/dev` is in a working state, use `./trt.sh -s` to synchronize the folders. This will cause the `/stable` folder to have the same working code as the `/dev` folder.
+
+
+## Usage help
 ```
 Create a new workshop
    -i     Initialize      Create a workshop in the current directory
