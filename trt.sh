@@ -12,6 +12,8 @@ NO_COLOR='\e[0m'
 
 ROOT_DIR="$(dirname $(readlink -f $0))"
 
+VERSION="0.1.0"
+
 
 # Shared functions
 debug(){
@@ -174,6 +176,10 @@ hard_upgrade(){
   debug "Hard upgrade finished."
 }
 
+print_version(){
+  echo "Turret version ${VERSION}"
+}
+
 
 
 # Run script
@@ -182,13 +188,14 @@ if [ $# -eq 0 ]; then
   exit 1
 fi
 
-while getopts ':isfuh' flag; do
+while getopts ':isfuhv' flag; do
   case "${flag}" in
     i) init ;;
     s) synchronize ;;
     u) soft_upgrade ;;
     f) hard_upgrade ;;
     h) usage ;;
+    v) print_version ;;
     *) printf "Unknown option: -%s\n" "$OPTARG" >&2
        usage 
        exit 1;;
