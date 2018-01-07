@@ -177,6 +177,7 @@ synchronize(){
   push_to_origin
   cd "$ROOT_DIR/stable"
   pull_from_origin
+  debug "Synchronized."
 }
 
 archive(){
