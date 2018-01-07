@@ -12,7 +12,7 @@ NO_COLOR='\e[0m'
 
 ROOT_DIR="$(dirname $(readlink -f $0))"
 
-VERSION="0.1.0"
+VERSION="0.2.0"
 
 
 # Shared functions
