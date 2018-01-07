@@ -42,6 +42,7 @@ Upgrade source code from dependencies
 
 Other commands
    -h     Help            Show this usage information
+   -v     Version         Print the current version of this tool
 
 
 Sources to download from can be added to: '.trt/repos'.
