@@ -26,15 +26,16 @@ running_from(){
   echo -e "${HIGHLIGHT_COLOR}Running script from:${NO_COLOR} $ROOT_DIR"
 }
 usage(){
-  echo "usage: $(basename "$0") [-i][-s][-u][-f][-h]
+  echo "usage: $(basename "$0") [-i][-s][-a][-u][-f][-h][-v]
 
 These are the turret commands:
 
 Create a new workshop
    -i     Initialize      Create a workshop in the current directory
 
-Synchronize environments
-   -s     Synchronize     Clone the current committed dev environment into the stable one
+Versioning workshops
+   -s     Synchronize     Copy the /dev directory into the /stable one
+   -a     Archive         Copy the /stable directory into a new directory in the /versions direcotry
 
 Upgrade source code from dependencies
    -u     Upgrade         Upgrade dependencies in the dev environment while skipping ignored files 
@@ -86,6 +87,14 @@ create_dev_folder(){
   say_done
 }
 
+create_versions_folder(){
+  debug "Creating versions folder..."
+  cd "$ROOT_DIR"
+  mkdir versions
+  cd "$ROOT_DIR/versions"
+  say_done
+}
+
 create_standard_config_files(){
   debug "Creating config files..."
   cd "$ROOT_DIR/.trt/"
@@ -96,15 +105,23 @@ create_standard_config_files(){
 
 
 # Synchronization functions
-push(){
+push_to_origin(){
   debug "Pushing to parent"
   git push origin master
 }
 
-pull(){
+pull_from_origin(){
   debug "Pulling from parent"
   git pull origin master
 }
+
+copy_to_new_archive(){
+  datename=$(date +%Y%m%d)
+  debug "Copying files from /stable to /versions/${datename}"
+  rsync -rltvSzhc --delay-updates --progress --exclude=".*" "$ROOT_DIR/stable/" "$ROOT_DIR/versions/${datename}"
+  say_done
+}
+
 
 # Upgrade functions
 commit_dev_folder(){
@@ -148,17 +165,25 @@ init(){
   create_parent_repo
   create_dev_folder
   create_stable_folder
+  create_versions_folder
   create_standard_config_files
   debug "Workspace ready."
 }
 
 synchronize(){
   running_from
-  debug "Synchronizing /dev with /stable"
+  debug "Synchronizing /dev with /stable..."
   cd "$ROOT_DIR/dev"
-  push
+  push_to_origin
   cd "$ROOT_DIR/stable"
-  pull
+  pull_from_origin
+}
+
+archive(){
+  running_from
+  debug "Creating archive of /stable..."
+  copy_to_new_archive
+  debug "Archive version created."
 }
 
 soft_upgrade(){
@@ -189,10 +214,11 @@ if [ $# -eq 0 ]; then
   exit 1
 fi
 
-while getopts ':isfuhv' flag; do
+while getopts ':isafuhv' flag; do
   case "${flag}" in
     i) init ;;
     s) synchronize ;;
+    a) archive ;;
     u) soft_upgrade ;;
     f) hard_upgrade ;;
     h) usage ;;
