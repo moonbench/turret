@@ -1,4 +1,8 @@
-# turret
+<p align="center">
+  <img alt="Turret" src="http://moonbench.xyz/images/projects/turret/tower_avatar.png" width="360">
+</p>
+
+# Turret
 This is a workspace management tool with the ability to create, version, and combine projects.
 
 
