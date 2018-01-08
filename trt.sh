@@ -111,13 +111,15 @@ create_standard_config_files(){
 
 # Synchronization functions
 push_to_origin(){
-  debug "Pushing to parent"
+  debug "Pushing from /dev to parent"
   git push origin master
+  say_done
 }
 
 pull_from_origin(){
-  debug "Pulling from parent"
+  debug "Pulling from parent to /stable"
   git pull origin master
+  say_done
 }
 
 copy_to_new_archive(){
