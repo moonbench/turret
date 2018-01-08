@@ -25,6 +25,8 @@ It also provides tools to compose projects together:
 ### Installation
 Copy the `trt.sh` script into your empty project directory.
 
+`wget https://raw.githubusercontent.com/moonbench/turret/master/trt.sh && chmod +x trt.sh`
+
 ### Making a new workspace
 Run `./trt.sh -i` to initialize the workspace.
 
