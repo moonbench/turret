@@ -17,17 +17,6 @@ It also provides tools to compose projects together:
 - `-f` Full upgrade which acts like `-u` but overwrites _all_ files with the versions from the dependency source.
 
 
-## Motivation
-This tool was built to help manage workspaces while developing software projects.
-
-There were two goals:
-
-1) Provide the ability to establish versions of a project to share with clients and contributors.
-By establishing versions, it is possible to have a `dev/` workspace where projects can be continuously developed without affecting the `stable/` or named versions linked elsewhere. This makes it possible to use, or get feedback on, a known version of the project without requiring the developer to pause their work.
-
-2) Provide the ability to compose projects into larger projects.
-By combining projects, it is possible to build smaller isolated projects and then reuse them in other projects. As the individual components change over time the composition can be upgraded to pull in the latest versions. This can be used, for example, to combine existing components such as a web framework, modules, and custom code into a complete website.
-
 ## Getting started
 ### Installation
 Copy the `trt.sh` script into your empty project directory.
@@ -74,6 +63,18 @@ config/database.ini
 ```
 
 Optionally, you can run `./trt.sh -f` to execute a "Full Upgrade" which will overwrite all files with the versions from the dependencies. Effectively ignoring the `ignores` list. This is intended to be used during major version upgrades in dependencies which require manual intervention to repair. The git history can be used to restore specific files.
+
+
+## Motivation
+This tool was built to help manage workspaces while developing software projects.
+
+There were two goals:
+
+1) Provide the ability to establish versions of a project to share with clients and contributors.
+By establishing versions, it is possible to have a `dev/` workspace where projects can be continuously developed without affecting the `stable/` or named versions linked elsewhere. This makes it possible to use, or get feedback on, a known version of the project without requiring the developer to pause their work.
+
+2) Provide the ability to compose projects into larger projects.
+By combining projects, it is possible to build smaller isolated projects and then reuse them in other projects. As the individual components change over time the composition can be upgraded to pull in the latest versions. This can be used, for example, to combine existing components such as a web framework, modules, and custom code into a complete website.
 
 
 ## Additional information
