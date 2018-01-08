@@ -138,8 +138,9 @@ commit_dev_folder(){
 
 download_dependencies_with_overwrite(){
   debug "Downloading dependencies into development environment... (no ignores)"
-  while read repo
-  do
+  DONE=false
+  until $DONE ;do
+    read repo || DONE=true
     if [ -n "$repo" ]; then
       echo -e "\t${HIGHLIGHT_COLOR}Repo:${NO_COLOR} ${repo}"
       rsync -rltvSzhc --delay-updates --progress --exclude=".*" "$repo/" .
@@ -150,8 +151,9 @@ download_dependencies_with_overwrite(){
 
 download_dependencies(){
   debug "Downloading dependencies into development environment..."
-  while read repo
-  do
+  DONE=false
+  until $DONE ;do
+    read repo || DONE=true
     if [ -n "$repo" ]; then
       echo -e "\t${HIGHC}Repo:${NC} ${repo}"
       rsync -rltvSzhc --delay-updates --progress --exclude-from "$ROOT_DIR/.trt/ignores" --exclude=".*" "$repo/" .
