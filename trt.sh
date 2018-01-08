@@ -7,6 +7,7 @@
 PROJECT_NAME='.project'
 
 HIGHLIGHT_COLOR='\e[36m'
+TITLE_COLOR='\e[4m\e[1m'
 DONE_COLOR='\e[1;32m'
 NO_COLOR='\e[0m'
 
@@ -17,13 +18,16 @@ VERSION="0.2.0"
 
 # Shared functions
 debug(){
-  echo -e "\n${HIGHLIGHT_COLOR}${1}${NO_COLOR}"
+  echo -e "${HIGHLIGHT_COLOR}${1}${NO_COLOR}"
+}
+title(){
+  echo -e "${TITLE_COLOR}${1}${NO_COLOR}\n"
+}
+success(){
+  echo -e "${DONE_COLOR}${TITLE_COLOR}${1}${NO_COLOR}"
 }
 say_done(){
-  echo -e "${DONE_COLOR}Done.${NO_COLOR}"
-}
-running_from(){
-  echo -e "${HIGHLIGHT_COLOR}Running script from:${NO_COLOR} $ROOT_DIR"
+  echo -e "${DONE_COLOR}Done.${NO_COLOR}\n"
 }
 usage(){
   echo "usage: $(basename "$0") [-i][-s][-a][-u][-f][-h][-v]
@@ -53,12 +57,13 @@ Files to not be overwritten during normal updgrades can be specified in: '.trt/i
 
 # Initialization functions
 create_config_folder(){
-  debug "Creating config folder"
+  debug "Creating config folder..."
   mkdir .trt
+  say_done
 }
 
 create_parent_repo(){
-  debug "Creating project repository"
+  debug "Creating project repository..."
   cd "$ROOT_DIR"
   git init --bare ${PROJECT_NAME}.git
   say_done
@@ -159,48 +164,43 @@ download_dependencies(){
 
 # Mode methods
 init(){
-  running_from
-  debug "Initializing new workspace..."
+  title "Initializing new workspace..."
   create_config_folder
   create_parent_repo
   create_dev_folder
   create_stable_folder
   create_versions_folder
   create_standard_config_files
-  debug "Workspace ready."
+  success "Workspace ready."
 }
 
 synchronize(){
-  running_from
-  debug "Synchronizing /dev with /stable..."
+  title "Synchronizing /dev with /stable..."
   cd "$ROOT_DIR/dev"
   push_to_origin
   cd "$ROOT_DIR/stable"
   pull_from_origin
-  debug "Synchronized."
+  success "Synchronized."
 }
 
 archive(){
-  running_from
-  debug "Creating archive of /stable..."
+  title "Creating archive of /stable..."
   copy_to_new_archive
-  debug "Archive version created."
+  success "Archive version created."
 }
 
 soft_upgrade(){
-  running_from
-  debug "Running a soft upgrade..."
+  title "Running a soft upgrade..."
   commit_dev_folder
   download_dependencies
-  debug "Soft upgrade finished."
+  success "Soft upgrade finished."
 }
 
 hard_upgrade(){
-  running_from
-  debug "Running a hard upgrade..."
+  title "Running a hard upgrade..."
   commit_dev_folder
   download_dependencies_with_overwrite
-  debug "Hard upgrade finished."
+  success "Hard upgrade finished."
 }
 
 print_version(){
