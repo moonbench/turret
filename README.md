@@ -57,7 +57,7 @@ An example `repos` file might look like:
 ```
 /home/username/workshop/php_framework/stable
 /home/username/workshop/upload_tool/versions/20171215
-/home/username/workshop/shopping_card/stable
+/home/username/workshop/shopping_cart/stable
 ```
 
 If you want to prevent a file from being overwritten during future upgrades, add the relative path to the file to the `.trt/ignores` file.
