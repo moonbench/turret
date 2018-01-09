@@ -18,6 +18,7 @@ VERSIONS_DIR='versionsfoo'
 HIGHLIGHT_COLOR='\e[36m'
 TITLE_COLOR='\e[4m\e[1m'
 DONE_COLOR='\e[1;32m'
+ERROR_COLOR='\e[41m'
 NO_COLOR='\e[0m'
 
 
@@ -35,6 +36,9 @@ title(){
 }
 success(){
   echo -e "${DONE_COLOR}${TITLE_COLOR}${1}${NO_COLOR}"
+}
+error(){
+  echo -e "${ERROR_COLOR}Failure: ${1}${NO_COLOR}\n"
 }
 say_done(){
   echo -e "${DONE_COLOR}Done.${NO_COLOR}\n"
@@ -122,12 +126,22 @@ create_standard_config_files(){
 # Synchronization functions
 push_to_origin(){
   debug "Pushing from /${DEV_DIR} to parent"
+  empty_check=$(find .git/objects -type f | wc -l)
+  if [ "$empty_check" -eq "0" ]; then
+    error ".git repository is empty"
+    return
+  fi
+  echo -e "${empty_check}"
   git push origin master
   say_done
 }
 
 pull_from_origin(){
   debug "Pulling from parent to /${STABLE_DIR}"
+  if [ "$empty_check" -eq "0" ]; then
+    error ".git repository is empty"
+    return
+  fi
   git pull origin master
   say_done
 }
