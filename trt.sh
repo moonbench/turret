@@ -11,6 +11,9 @@
 
 # Workspace options
 PROJECT_NAME='.project'
+DEV_DIR='devfoo'
+STABLE_DIR='stablefoo'
+VERSIONS_DIR='versionsfoo'
 
 HIGHLIGHT_COLOR='\e[36m'
 TITLE_COLOR='\e[4m\e[1m'
@@ -84,8 +87,8 @@ create_repo(){
 create_stable_folder(){
   debug "Creating stable folder..."
   cd "$ROOT_DIR"
-  mkdir stable
-  cd "$ROOT_DIR/stable"
+  mkdir "${STABLE_DIR}"
+  cd "$ROOT_DIR/${STABLE_DIR}"
   create_repo
   say_done
 }
@@ -93,8 +96,8 @@ create_stable_folder(){
 create_dev_folder(){
   debug "Creating dev folder..."
   cd "$ROOT_DIR"
-  mkdir dev
-  cd "$ROOT_DIR/dev"
+  mkdir "${DEV_DIR}"
+  cd "$ROOT_DIR/${DEV_DIR}"
   create_repo
   say_done
 }
@@ -102,8 +105,8 @@ create_dev_folder(){
 create_versions_folder(){
   debug "Creating versions folder..."
   cd "$ROOT_DIR"
-  mkdir versions
-  cd "$ROOT_DIR/versions"
+  mkdir "${VERSIONS_DIR}"
+  cd "$ROOT_DIR/${VERSIONS_DIR}"
   say_done
 }
 
@@ -118,21 +121,23 @@ create_standard_config_files(){
 
 # Synchronization functions
 push_to_origin(){
-  debug "Pushing from /dev to parent"
+  debug "Pushing from /${DEV_DIR} to parent"
   git push origin master
   say_done
 }
 
 pull_from_origin(){
-  debug "Pulling from parent to /stable"
+  debug "Pulling from parent to /${STABLE_DIR}"
   git pull origin master
   say_done
 }
 
 copy_to_new_archive(){
   datename=$(date +%Y%m%d)
-  debug "Copying files from /stable to /versions/${datename}"
-  rsync -rltvSzhc --delay-updates --progress --exclude=".*" "$ROOT_DIR/stable/" "$ROOT_DIR/versions/${datename}"
+  debug "Copying files from /${STABLE_DIR} to /${VERSIONS_DIR}/${datename}"
+  stable_path="$ROOT_DIR/${STABLE_DIR}/"
+  versions_path="$ROOT_DIR/${VERSIONS_DIR}/${datename}"
+  rsync -rltvSzhc --delay-updates --progress --exclude=".*" "${stable_path}" "${versions_path}"
   say_done
 }
 
@@ -140,7 +145,7 @@ copy_to_new_archive(){
 # Upgrade functions
 commit_dev_folder(){
   debug "Saving working state prior to upgrade..."
-  cd "$ROOT_DIR/dev"
+  cd "$ROOT_DIR/${DEV_DIR}"
   git commit -a -m "Commit prior to upgrade"
   say_done
 }
@@ -186,16 +191,16 @@ init(){
 }
 
 synchronize(){
-  title "Synchronizing /dev with /stable..."
-  cd "$ROOT_DIR/dev"
+  title "Synchronizing /${DEV_DIR} with /${STABLE_DIR}..."
+  cd "$ROOT_DIR/${DEV_DIR}"
   push_to_origin
-  cd "$ROOT_DIR/stable"
+  cd "$ROOT_DIR/${STABLE_DIR}"
   pull_from_origin
   success "Synchronized."
 }
 
 archive(){
-  title "Creating archive of /stable..."
+  title "Creating archive of /${STABLE_DIR}..."
   copy_to_new_archive
   success "Archive version created."
 }
