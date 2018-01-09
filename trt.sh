@@ -71,7 +71,7 @@ Files to not be overwritten during normal updgrades can be specified in: '.trt/i
 
 # Initialization functions
 create_config_folder(){
-  debug "Creating config folder..."
+  debug "Creating /.trt config directory..."
   mkdir .trt
   say_done
 }
@@ -88,26 +88,17 @@ create_repo(){
   git remote add origin ../${PROJECT_NAME}.git
 }
 
-create_stable_folder(){
-  debug "Creating stable folder..."
+create_workspace(){
+  debug "Creating /${1} workspace..."
   cd "$ROOT_DIR"
-  mkdir "${STABLE_DIR}"
-  cd "$ROOT_DIR/${STABLE_DIR}"
-  create_repo
-  say_done
-}
-
-create_dev_folder(){
-  debug "Creating dev folder..."
-  cd "$ROOT_DIR"
-  mkdir "${DEV_DIR}"
-  cd "$ROOT_DIR/${DEV_DIR}"
+  mkdir "${1}"
+  cd "$ROOT_DIR/${1}"
   create_repo
   say_done
 }
 
 create_versions_folder(){
-  debug "Creating versions folder..."
+  debug "Creating /versions directory..."
   cd "$ROOT_DIR"
   mkdir "${VERSIONS_DIR}"
   cd "$ROOT_DIR/${VERSIONS_DIR}"
@@ -200,11 +191,11 @@ init(){
     return
   fi
   create_config_folder
-  create_parent_repo
-  create_dev_folder
-  create_stable_folder
-  create_versions_folder
   create_standard_config_files
+  create_parent_repo
+  create_workspace "${DEV_DIR}"
+  create_workspace "${STABLE_DIR}"
+  create_versions_folder
   success "Workspace ready."
 }
 
