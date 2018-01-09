@@ -11,9 +11,9 @@
 
 # Workspace options
 PROJECT_NAME='.project'
-DEV_DIR='devfoo'
-STABLE_DIR='stablefoo'
-VERSIONS_DIR='versionsfoo'
+DEV_DIR='dev'
+STABLE_DIR='stable'
+VERSIONS_DIR='versions'
 
 HIGHLIGHT_COLOR='\e[36m'
 TITLE_COLOR='\e[4m\e[1m'
