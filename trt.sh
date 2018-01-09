@@ -1,7 +1,13 @@
 #!/bin/bash
-#============================================================
-# Turret - Workshop deployment tool
-#============================================================
+
+# Turret
+#
+# Workspace management tool designed to create, version, and combine projects
+#
+# Licensed under the MIT License.
+#
+# More information: https://github.com/moonbench/turret
+
 
 # Workspace options
 PROJECT_NAME='.project'
@@ -11,8 +17,9 @@ TITLE_COLOR='\e[4m\e[1m'
 DONE_COLOR='\e[1;32m'
 NO_COLOR='\e[0m'
 
-ROOT_DIR="$(dirname $(readlink -f $0))"
 
+# Tool variables
+ROOT_DIR="$(dirname $(readlink -f $0))"
 VERSION="0.2.2"
 
 
