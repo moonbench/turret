@@ -122,17 +122,12 @@ push_to_origin(){
     error ".git repository is empty"
     return
   fi
-  echo -e "${empty_check}"
   git push origin master
   say_done
 }
 
 pull_from_origin(){
   debug "Pulling from parent to /${STABLE_DIR}"
-  if [ "$empty_check" -eq "0" ]; then
-    error ".git repository is empty"
-    return
-  fi
   git pull origin master
   say_done
 }
@@ -201,6 +196,10 @@ init(){
 
 synchronize(){
   title "Synchronizing /${DEV_DIR} with /${STABLE_DIR}..."
+  if [ ! -d "$ROOT_DIR/$DEV_DIR" ] || [ ! -d "$ROOT_DIR/$STABLE_DIR" ]; then
+    error "Unable to find both /$DEV_DIR and /$STABLE_DIR directories"
+    return
+  fi
   cd "$ROOT_DIR/${DEV_DIR}"
   push_to_origin
   cd "$ROOT_DIR/${STABLE_DIR}"
@@ -210,12 +209,20 @@ synchronize(){
 
 archive(){
   title "Creating archive of /${STABLE_DIR}..."
+  if [ ! -d "$ROOT_DIR/$STABLE_DIR" ]; then
+    error "Unable to find /$STABLE_DIR directory"
+    return
+  fi
   copy_to_new_archive
   success "Archive version created."
 }
 
 soft_upgrade(){
   title "Running a soft upgrade..."
+  if [ ! -d "$ROOT_DIR/$DEV_DIR" ]; then
+    error "Unable to find /$DEV_DIR directory"
+    return
+  fi
   commit_dev_folder
   download_dependencies
   success "Soft upgrade finished."
@@ -223,6 +230,10 @@ soft_upgrade(){
 
 hard_upgrade(){
   title "Running a hard upgrade..."
+  if [ ! -d "$ROOT_DIR/$DEV_DIR" ]; then
+    error "Unable to find /$DEV_DIR directory"
+    return
+  fi
   commit_dev_folder
   download_dependencies_with_overwrite
   success "Hard upgrade finished."
