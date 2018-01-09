@@ -195,6 +195,10 @@ download_dependencies(){
 # Mode methods
 init(){
   title "Initializing new workspace..."
+  if [ -d ".trt" ]; then
+    error "Already initialized. (.trt/ exists)"
+    return
+  fi
   create_config_folder
   create_parent_repo
   create_dev_folder
