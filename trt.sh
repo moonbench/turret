@@ -154,10 +154,16 @@ download_dependencies_with_overwrite(){
   debug "Downloading dependencies into development environment... (no ignores)"
   DONE=false
   until $DONE ;do
-    read repo || DONE=true
+    IFS='>' read repo dest <<< "$repo"
+    if [ ${#dest} == 0 ]; then
+	dest='.'
+    fi
+    repo="$(echo -e "${repo}" | tr -d '[:space:]')"
+    dest="$(echo -e "${dest}" | tr -d '[:space:]')"
+    echo ${#dest}
     if [ -n "$repo" ]; then
-      echo -e "\t${HIGHLIGHT_COLOR}Repo:${NO_COLOR} ${repo}"
-      rsync -rltvSzhc --delay-updates --progress --exclude=".*" "$repo/" .
+      echo -e "\t${HIGHC}Repo:${NC} '${repo}' '${dest}'"
+      rsync -rltvSzhc --delay-updates --progress --exclude=".*" "$repo/" "$dest"
     fi
   done < "$ROOT_DIR/.trt/repos"
   say_done
@@ -168,9 +174,16 @@ download_dependencies(){
   DONE=false
   until $DONE ;do
     read repo || DONE=true
+    IFS='>' read repo dest <<< "$repo"
+    if [ ${#dest} == 0 ]; then
+	dest='.'
+    fi
+    repo="$(echo -e "${repo}" | tr -d '[:space:]')"
+    dest="$(echo -e "${dest}" | tr -d '[:space:]')"
+    echo ${#dest}
     if [ -n "$repo" ]; then
-      echo -e "\t${HIGHC}Repo:${NC} ${repo}"
-      rsync -rltvSzhc --delay-updates --progress --exclude-from "$ROOT_DIR/.trt/ignores" --exclude=".*" "$repo/" .
+      echo -e "\t${HIGHC}Repo:${NC} '${repo}' '${dest}'"
+      rsync -rltvSzhc --delay-updates --progress --exclude-from "$ROOT_DIR/.trt/ignores" --exclude=".*" "$repo/" "$dest"
     fi
   done < "$ROOT_DIR/.trt/repos"
   say_done
