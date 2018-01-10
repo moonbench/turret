@@ -24,7 +24,7 @@ NO_COLOR='\e[0m'
 
 # Tool variables
 ROOT_DIR="$(dirname $(readlink -f $0))"
-VERSION="0.2.5"
+VERSION="0.3.0"
 
 
 # Shared functions
