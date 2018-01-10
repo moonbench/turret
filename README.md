@@ -60,6 +60,14 @@ An example `repos` file might look like:
 /home/username/workshop/shopping_cart/stable
 ```
 
+You can redirect the location where a repo is copied by adding a `>` followed by a path.
+
+For example:
+```
+/home/user/workshop/project/stable > src/modules/js
+```
+would have the contents copied into `dev/src/modules/js`.
+
 If you want to prevent a file from being overwritten during future upgrades, add the relative path to the file to the `.trt/ignores` file.
 
 An example `ignores` file might look like:
