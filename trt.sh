@@ -156,23 +156,23 @@ download_dependencies(){
   until $DONE ;do
     read repo || DONE=true
     IFS='>' read repo dest <<< "$repo"
-    if [ ${#dest} == 0 ]; then
-      dest='.'
-    fi
-    repo="$(echo -e "${repo}" | tr -d '[:space:]')"
-    dest="$(echo -e "${dest}" | tr -d '[:space:]')"
     ignores=()
     if [ ! $1 ]; then
       debug "Loading in ignores file"
       IGNORE_DONE=false
       until $IGNORE_DONE ;do
         read ignore || IGNORE_DONE=true
-	if [[ "${ignore}" == $dest* ]]; then
+	if [ ! -z "${ignore}" ] && [[ "${ignore}" == $dest* ]]; then
 	  ignores+="--exclude ${ignore#$dest/} "
 	fi
       done < "$ROOT_DIR/.trt/ignores"
     fi
     ignores="${ignores[@]}"
+    if [ ${#dest} == 0 ]; then
+      dest='.'
+    fi
+    repo="$(echo -e "${repo}" | tr -d '[:space:]')"
+    dest="$(echo -e "${dest}" | tr -d '[:space:]')"
     download_repo_into "$repo" "$dest" "$ignores"
   done < "$ROOT_DIR/.trt/repos"
   say_done
