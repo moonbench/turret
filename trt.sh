@@ -150,25 +150,6 @@ commit_dev_folder(){
   say_done
 }
 
-download_dependencies_with_overwrite(){
-  debug "Downloading dependencies into development environment... (no ignores)"
-  DONE=false
-  until $DONE ;do
-    read repo || DONE=true
-    IFS='>' read repo dest <<< "$repo"
-    if [ ${#dest} == 0 ]; then
-	dest='.'
-    fi
-    repo="$(echo -e "${repo}" | tr -d '[:space:]')"
-    dest="$(echo -e "${dest}" | tr -d '[:space:]')"
-    if [ -n "$repo" ]; then
-      echo -e "\t${HIGHC}Repo:${NC} '${repo}' '${dest}'"
-      rsync -rltvSzhc --delay-updates --progress --exclude=".*" "$repo/" "$dest"
-    fi
-  done < "$ROOT_DIR/.trt/repos"
-  say_done
-}
-
 download_dependencies(){
   debug "Downloading dependencies into development environment..."
   DONE=false
@@ -176,18 +157,42 @@ download_dependencies(){
     read repo || DONE=true
     IFS='>' read repo dest <<< "$repo"
     if [ ${#dest} == 0 ]; then
-	dest='.'
+      dest='.'
     fi
     repo="$(echo -e "${repo}" | tr -d '[:space:]')"
     dest="$(echo -e "${dest}" | tr -d '[:space:]')"
-    if [ -n "$repo" ]; then
-      echo -e "\t${HIGHC}Repo:${NC} '${repo}' '${dest}'"
-      rsync -rltvSzhc --delay-updates --progress --exclude-from "$ROOT_DIR/.trt/ignores" --exclude=".*" "$repo/" "$dest"
+    ignores=()
+    if [ ! $1 ]; then
+      debug "Loading in ignores file"
+      IGNORE_DONE=false
+      until $IGNORE_DONE ;do
+        read ignore || IGNORE_DONE=true
+	if [[ "${ignore}" == $dest* ]]; then
+	  ignores+="--exclude ${ignore#$dest/} "
+	fi
+      done < "$ROOT_DIR/.trt/ignores"
     fi
+    ignores="${ignores[@]}"
+    download_repo_into "$repo" "$dest" "$ignores"
   done < "$ROOT_DIR/.trt/repos"
   say_done
 }
 
+download_repo_into(){
+  repo="${1}"
+  dest="${2}"
+  if [ -n "$repo" ]; then
+    echo -e "\t${HIGHLIGHT_COLOR}Repo:${NO_COLOR} ${repo}"
+    echo -e "\t${HIGHLIGHT_COLOR}Into:${NO_COLOR} ${dest}"
+    if [ -z "$3" ]; then
+      rsync -rltvSzhc --delay-updates --progress --exclude=".*" "$repo/" "$dest"
+    else
+      ignores="${3}"
+      echo -e "\t${HIGHLIGHT_COLOR}Excluding:${NO_COLOR} ${ignores}"
+      rsync -rltvSzhc --delay-updates --progress --exclude=".*" $ignores "$repo/" "$dest"
+    fi
+  fi
+}
 
 
 # Mode methods
@@ -247,7 +252,7 @@ hard_upgrade(){
     return
   fi
   commit_dev_folder
-  download_dependencies_with_overwrite
+  download_dependencies true
   success "Hard upgrade finished."
 }
 
