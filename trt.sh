@@ -154,13 +154,13 @@ download_dependencies_with_overwrite(){
   debug "Downloading dependencies into development environment... (no ignores)"
   DONE=false
   until $DONE ;do
+    read repo || DONE=true
     IFS='>' read repo dest <<< "$repo"
     if [ ${#dest} == 0 ]; then
 	dest='.'
     fi
     repo="$(echo -e "${repo}" | tr -d '[:space:]')"
     dest="$(echo -e "${dest}" | tr -d '[:space:]')"
-    echo ${#dest}
     if [ -n "$repo" ]; then
       echo -e "\t${HIGHC}Repo:${NC} '${repo}' '${dest}'"
       rsync -rltvSzhc --delay-updates --progress --exclude=".*" "$repo/" "$dest"
@@ -180,7 +180,6 @@ download_dependencies(){
     fi
     repo="$(echo -e "${repo}" | tr -d '[:space:]')"
     dest="$(echo -e "${dest}" | tr -d '[:space:]')"
-    echo ${#dest}
     if [ -n "$repo" ]; then
       echo -e "\t${HIGHC}Repo:${NC} '${repo}' '${dest}'"
       rsync -rltvSzhc --delay-updates --progress --exclude-from "$ROOT_DIR/.trt/ignores" --exclude=".*" "$repo/" "$dest"
