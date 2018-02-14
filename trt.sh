@@ -40,26 +40,23 @@ say_done(){
 usage(){
   echo "usage: $(basename "$0") [-i][-s][-a][-u][-f][-h][-v]
 
-These are the turret commands:
+Creates and manipulates project workspaces
 
-Create a new workshop
-   -i     Initialize      Create a workshop in the current directory
+Help:
+  -h                Show help and usage information
+  -v                Display the current version
 
-Versioning workshops
-   -s     Synchronize     Copy the /dev directory into the /stable one
-   -a     Archive         Copy the /stable directory into a new directory in the /versions direcotry
+Initialize:
+  -i                Initialize. Create a new workspace in the current directory
 
-Upgrade source code from dependencies
-   -u     Upgrade         Upgrade dependencies in the dev environment while skipping ignored files 
-   -f     Full upgrade    Upgrade all dependencies in the dev environment
+Versioning:
+  -s                Synchronize. Pull changes into ./stable/ from ./dev/
+  -a                Archive. Create a copy in ./versions/{date}/ from ./stable/
 
-Other commands
-   -h     Help            Show this usage information
-   -v     Version         Print the current version of this tool
-
-
-Sources to download from can be added to: '.trt/repos'.
-Files to not be overwritten during normal updgrades can be specified in: '.trt/ignores'." >&2
+Upgrading:
+  -u                Upgrade. Copy modified files from the sources in ./.trt/repos
+  -f                Full upgrade. Same as -u but without respecting ./.trt/ignores
+" >&2
 }
 
 
