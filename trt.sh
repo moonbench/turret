@@ -4,23 +4,22 @@
 # https://github.com/moonbench/turret
 # MIT License
 
-# Workspace options
+# Defaults
 PROJECT_NAME='.project'
 DEV_DIR='dev'
 STABLE_DIR='stable'
 VERSIONS_DIR='versions'
 
+# Colors
 HIGHLIGHT_COLOR='\e[36m'
 TITLE_COLOR='\e[4m\e[1m'
 DONE_COLOR='\e[1;32m'
 ERROR_COLOR='\e[41m'
 NO_COLOR='\e[0m'
 
-
-# Tool variables
-ROOT_DIR="$(dirname $(readlink -f $0))"
-VERSION="0.4.1"
-
+# Consts
+declare ROOT_DIR="$(dirname $(readlink -f $0))"
+declare VERSION="0.4.1"
 
 # Shared functions
 debug(){
