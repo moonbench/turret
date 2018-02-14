@@ -1,13 +1,8 @@
 #!/bin/bash
 
-# Turret
-#
-# Workspace management tool designed to create, version, and combine projects
-#
-# Licensed under the MIT License.
-#
-# More information: https://github.com/moonbench/turret
-
+# Turret - Workspace management tool designed to create, version, and combine projects
+# https://github.com/moonbench/turret
+# MIT License
 
 # Workspace options
 PROJECT_NAME='.project'
