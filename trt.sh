@@ -17,28 +17,10 @@ DONE_COLOR='\e[1;32m'
 ERROR_COLOR='\e[41m'
 NO_COLOR='\e[0m'
 
-# Consts
+# Constants
 declare ROOT_DIR="$(dirname $(readlink -f $0))"
 declare VERSION="0.4.1"
-
-# Shared functions
-debug(){
-  echo -e "${HIGHLIGHT_COLOR}${1}${NO_COLOR}"
-}
-title(){
-  echo -e "${TITLE_COLOR}${1}${NO_COLOR}\n"
-}
-success(){
-  echo -e "${DONE_COLOR}${TITLE_COLOR}${1}${NO_COLOR}"
-}
-error(){
-  echo -e "${ERROR_COLOR}Failure: ${1}${NO_COLOR}\n"
-}
-say_done(){
-  echo -e "${DONE_COLOR}Done.${NO_COLOR}\n"
-}
-usage(){
-  echo "usage: $(basename "$0") [-i][-s][-a][-u][-f][-h][-v]
+declare USAGE="usage: $(basename "$0") [-i][-s][-a][-u][-f][-h][-v]
 
 Creates and manipulates project workspaces
 
@@ -56,9 +38,24 @@ Versioning:
 Upgrading:
   -u                Upgrade. Copy modified files from the sources in ./.trt/repos
   -f                Full upgrade. Same as -u but without respecting ./.trt/ignores
-" >&2
-}
+"
 
+# Shared functions
+debug(){
+  echo -e "${HIGHLIGHT_COLOR}${1}${NO_COLOR}"
+}
+title(){
+  echo -e "${TITLE_COLOR}${1}${NO_COLOR}\n"
+}
+success(){
+  echo -e "${DONE_COLOR}${TITLE_COLOR}${1}${NO_COLOR}"
+}
+error(){
+  echo -e "${ERROR_COLOR}Failure: ${1}${NO_COLOR}\n"
+}
+say_done(){
+  echo -e "${DONE_COLOR}Done.${NO_COLOR}\n"
+}
 
 # Initialization functions
 create_config_folder(){
@@ -104,7 +101,6 @@ create_standard_config_files(){
   say_done
 }
 
-
 # Synchronization functions
 push_to_origin(){
   debug "Pushing from /${DEV_DIR} to parent"
@@ -131,7 +127,6 @@ copy_to_new_archive(){
   rsync -rltvSzhc --delay-updates --progress --exclude=".*" "${stable_path}" "${versions_path}"
   say_done
 }
-
 
 # Upgrade functions
 commit_dev_folder(){
@@ -184,7 +179,6 @@ download_repo_into(){
     fi
   fi
 }
-
 
 # Mode methods
 init(){
@@ -247,31 +241,28 @@ hard_upgrade(){
   success "Hard upgrade finished."
 }
 
-print_version(){
-  echo "Turret version ${VERSION}"
-}
-
-
-
-# Run script
-if [ $# -eq 0 ]; then
-  usage
+# Check for missing arguments
+if [[ $# -eq 0 ]] ; then
+  echo "${USAGE}">&2
   exit 1
 fi
 
-while getopts ':isafuhv' flag; do
+# Parse arguments
+while getopts ':hvisafu' flag; do
   case "${flag}" in
+    h) echo "${USAGE}">&2
+      exit
+      ;;
+    v) echo "Turret version ${VERSION}"
+      exit
+      ;;
     i) init ;;
     s) synchronize ;;
     a) archive ;;
     u) soft_upgrade ;;
     f) hard_upgrade ;;
-    h) usage ;;
-    v) print_version ;;
     *) printf "Unknown option: -%s\n" "$OPTARG" >&2
-       usage 
+       echo "${USAGE}">&2
        exit 1;;
   esac
 done
-
-exit 0
