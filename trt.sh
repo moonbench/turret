@@ -20,7 +20,9 @@ NO_COLOR='\e[0m'
 # Constants
 declare ROOT_DIR="$(dirname $(readlink -f $0))"
 declare VERSION="0.4.1"
-declare USAGE="usage: $(basename "$0") [-i][-s][-a][-u][-f][-h][-v]
+declare USAGE="usage: $(basename "$0") [-h][-v]
+              [-P <name>][-D <path>][-S <path>][-A <path>]
+              [-i][-s][-a][-u][-f]
 
 Creates and manipulates project workspaces
 
@@ -38,7 +40,12 @@ Versioning:
 Upgrading:
   -u                Upgrade. Copy modified files from the sources in ./.trt/repos
   -f                Full upgrade. Same as -u but without respecting ./.trt/ignores
-"
+
+Optional:
+  -P                Project repo. Default: \"${PROJECT_NAME}\"
+  -D                Dev directory. Default: \"${DEV_DIR}\"
+  -S                Stable directory. Default: \"${STABLE_DIR}\"
+  -A                Archive directory. Default: \"${VERSIONS_DIR}\""
 
 # Shared functions
 debug(){
@@ -86,7 +93,7 @@ create_workspace(){
 }
 
 create_versions_folder(){
-  debug "Creating /versions directory..."
+  debug "Creating /${VERSIONS_DIR} directory..."
   cd "$ROOT_DIR"
   mkdir "${VERSIONS_DIR}"
   cd "$ROOT_DIR/${VERSIONS_DIR}"
@@ -248,7 +255,7 @@ if [[ $# -eq 0 ]] ; then
 fi
 
 # Parse arguments
-while getopts ':hvisafu' flag; do
+while getopts ':hvisafuP:D:S:A:' flag; do
   case "${flag}" in
     h) echo "${USAGE}">&2
       exit
@@ -261,7 +268,11 @@ while getopts ':hvisafu' flag; do
     a) archive ;;
     u) soft_upgrade ;;
     f) hard_upgrade ;;
-    *) printf "Unknown option: -%s\n" "$OPTARG" >&2
+    P) PROJECT_NAME="$OPTARG" ;;
+    D) DEV_DIR="$OPTARG" ;;
+    S) STABLE_DIR="$OPTARG" ;;
+    A) VERSIONS_DIR="$OPTARG" ;;
+    *) echo "Unknown option: -${OPTARG}">&2
        echo "${USAGE}">&2
        exit 1;;
   esac
