@@ -172,7 +172,7 @@ create_ignore_flags(){
   until $IGNORE_DONE ;do
     read ignore || IGNORE_DONE=true
     if [ ! -z "${ignore}" ] && [[ "${ignore}" == $dest* ]]; then
-      ignores+="--exclude ${ignore#$dest/} "
+      ignores+=("--exclude ${ignore#$dest/} ")
     fi
   done < "$ROOT_DIR/.trt/ignores"
   echo "${ignores[@]}"
