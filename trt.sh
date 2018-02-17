@@ -186,9 +186,9 @@ download_repo_into(){
   if [ -z "$3" ]; then
     rsync -rltvSzhc --delay-updates --progress --exclude=".*" "$repo/" "$dest"
   else
-    ignores="${3}"
-    echo -e "\t${HIGHLIGHT_COLOR}Excluding:${NO_COLOR} ${ignores}"
-    rsync -rltvSzhc --delay-updates --progress --exclude=".*" $ignores "$repo/" "$dest"
+    ignore_flags="${3}"
+    echo -e "\t${HIGHLIGHT_COLOR}Excluding:${NO_COLOR} ${ignore_flags}"
+    rsync -rltvSzhc --delay-updates --progress --exclude=".*" $ignore_flags "$repo/" "$dest"
   fi
   printf "\t" && say_done
 }
