@@ -73,7 +73,7 @@ create_config_folder(){
 
 create_parent_repo(){
   debug "Creating project repository..."
-  cd "$ROOT_DIR"
+  cd "$ROOT_DIR" || return
   git init --bare ${PROJECT_NAME}.git
   say_done
 }
@@ -85,24 +85,24 @@ create_repo(){
 
 create_workspace(){
   debug "Creating /${1} workspace..."
-  cd "$ROOT_DIR"
+  cd "$ROOT_DIR" || return
   mkdir "${1}"
-  cd "$ROOT_DIR/${1}"
+  cd "$ROOT_DIR/${1}" || return
   create_repo
   say_done
 }
 
 create_versions_folder(){
   debug "Creating /${VERSIONS_DIR} directory..."
-  cd "$ROOT_DIR"
+  cd "$ROOT_DIR" || return
   mkdir "${VERSIONS_DIR}"
-  cd "$ROOT_DIR/${VERSIONS_DIR}"
+  cd "$ROOT_DIR/${VERSIONS_DIR}" || return
   say_done
 }
 
 create_standard_config_files(){
   debug "Creating config files..."
-  cd "$ROOT_DIR/.trt/"
+  cd "$ROOT_DIR/.trt/" || return
   touch repos
   touch ignores
   say_done
@@ -138,7 +138,7 @@ copy_to_new_archive(){
 # Upgrade functions
 commit_dev_folder(){
   debug "Saving working state prior to upgrade..."
-  cd "$ROOT_DIR/${DEV_DIR}"
+  cd "$ROOT_DIR/${DEV_DIR}" || return
   git commit -a -m "Commit prior to upgrade"
   say_done
 }
@@ -209,9 +209,9 @@ synchronize(){
     error "Unable to find both /$DEV_DIR and /$STABLE_DIR directories"
     return
   fi
-  cd "$ROOT_DIR/${DEV_DIR}"
+  cd "$ROOT_DIR/${DEV_DIR}" || return
   push_to_origin
-  cd "$ROOT_DIR/${STABLE_DIR}"
+  cd "$ROOT_DIR/${STABLE_DIR}" || return
   pull_from_origin
   success "Synchronized."
 }
