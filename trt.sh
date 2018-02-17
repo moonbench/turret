@@ -147,8 +147,8 @@ download_dependencies(){
   debug "Downloading dependencies into development environment..."
   DONE=false
   until $DONE ;do
-    read repo || DONE=true
-    IFS='>' read repo dest <<< "$repo"
+    read -r repo || DONE=true
+    IFS='>' read -r repo dest <<< "$repo"
     if [ -z "$repo" ]; then
       continue
     fi
@@ -170,7 +170,7 @@ create_ignore_flags(){
   ignores=()
   IGNORE_DONE=false
   until $IGNORE_DONE ;do
-    read ignore || IGNORE_DONE=true
+    read -r ignore || IGNORE_DONE=true
     if [ ! -z "${ignore}" ] && [[ "${ignore}" == $dest* ]]; then
       ignores+=("--exclude ${ignore#$dest/} ")
     fi
