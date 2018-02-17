@@ -149,42 +149,48 @@ download_dependencies(){
   until $DONE ;do
     read repo || DONE=true
     IFS='>' read repo dest <<< "$repo"
-    ignores=()
-    if [ ! $1 ]; then
-      debug "Loading in ignores file"
-      IGNORE_DONE=false
-      until $IGNORE_DONE ;do
-        read ignore || IGNORE_DONE=true
-	if [ ! -z "${ignore}" ] && [[ "${ignore}" == $dest* ]]; then
-	  ignores+="--exclude ${ignore#$dest/} "
-	fi
-      done < "$ROOT_DIR/.trt/ignores"
-    fi
-    ignores="${ignores[@]}"
-    if [ ${#dest} == 0 ]; then
-      dest='.'
+    if [ -z "$repo" ]; then
+      continue
     fi
     repo="$(echo -e "${repo}" | tr -d '[:space:]')"
     dest="$(echo -e "${dest}" | tr -d '[:space:]')"
-    download_repo_into "$repo" "$dest" "$ignores"
+    ignore_flags=""
+    if [ ! $1 ]; then
+      ignore_flags=$(create_ignore_flags "$dest")
+    fi
+    if [ ${#dest} == 0 ]; then
+      dest='.'
+    fi
+    download_repo_into "$repo" "$dest" "$ignore_flags"
   done < "$ROOT_DIR/.trt/repos"
   say_done
+}
+
+create_ignore_flags(){
+  ignores=()
+  IGNORE_DONE=false
+  until $IGNORE_DONE ;do
+    read ignore || IGNORE_DONE=true
+    if [ ! -z "${ignore}" ] && [[ "${ignore}" == $dest* ]]; then
+      ignores+="--exclude ${ignore#$dest/} "
+    fi
+  done < "$ROOT_DIR/.trt/ignores"
+  echo "${ignores[@]}"
 }
 
 download_repo_into(){
   repo="${1}"
   dest="${2}"
-  if [ -n "$repo" ]; then
-    echo -e "\t${HIGHLIGHT_COLOR}Repo:${NO_COLOR} ${repo}"
-    echo -e "\t${HIGHLIGHT_COLOR}Into:${NO_COLOR} ${dest}"
-    if [ -z "$3" ]; then
-      rsync -rltvSzhc --delay-updates --progress --exclude=".*" "$repo/" "$dest"
-    else
-      ignores="${3}"
-      echo -e "\t${HIGHLIGHT_COLOR}Excluding:${NO_COLOR} ${ignores}"
-      rsync -rltvSzhc --delay-updates --progress --exclude=".*" $ignores "$repo/" "$dest"
-    fi
+  echo -e "\t${HIGHLIGHT_COLOR}Repo:${NO_COLOR} ${repo}"
+  echo -e "\t${HIGHLIGHT_COLOR}Into:${NO_COLOR} ${dest}"
+  if [ -z "$3" ]; then
+    rsync -rltvSzhc --delay-updates --progress --exclude=".*" "$repo/" "$dest"
+  else
+    ignores="${3}"
+    echo -e "\t${HIGHLIGHT_COLOR}Excluding:${NO_COLOR} ${ignores}"
+    rsync -rltvSzhc --delay-updates --progress --exclude=".*" $ignores "$repo/" "$dest"
   fi
+  printf "\t" && say_done
 }
 
 # Mode methods
