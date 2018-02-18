@@ -19,7 +19,7 @@ NO_COLOR='\e[0m'
 
 # Constants
 declare ROOT_DIR="$(dirname $(readlink -f $0))"
-declare VERSION="0.5.0"
+declare VERSION="0.5.1"
 declare USAGE="usage: $(basename "$0") [-h][-v]
               [-P <name>][-D <path>][-S <path>][-A <path>]
               [-i][-s][-a][-u][-f]
