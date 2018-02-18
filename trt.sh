@@ -52,16 +52,16 @@ debug(){
   echo -e "${HIGHLIGHT_COLOR}${1}${NO_COLOR}"
 }
 title(){
-  echo -e "${TITLE_COLOR}${1}${NO_COLOR}\n"
+  echo -e "${TITLE_COLOR}${1}${NO_COLOR}\\n"
 }
 success(){
   echo -e "${DONE_COLOR}${TITLE_COLOR}${1}${NO_COLOR}"
 }
 error(){
-  echo -e "${ERROR_COLOR}Failure: ${1}${NO_COLOR}\n"
+  echo -e "${ERROR_COLOR}Failure: ${1}${NO_COLOR}\\n"
 }
 say_done(){
-  echo -e "${DONE_COLOR}Done.${NO_COLOR}\n"
+  echo -e "${DONE_COLOR}Done.${NO_COLOR}\\n"
 }
 
 # Initialization functions
@@ -181,16 +181,16 @@ create_ignore_flags(){
 download_repo_into(){
   repo="${1}"
   dest="${2}"
-  echo -e "\t${HIGHLIGHT_COLOR}Repo:${NO_COLOR} ${repo}"
-  echo -e "\t${HIGHLIGHT_COLOR}Into:${NO_COLOR} ${dest}"
+  echo -e "\\t${HIGHLIGHT_COLOR}Repo:${NO_COLOR} ${repo}"
+  echo -e "\\t${HIGHLIGHT_COLOR}Into:${NO_COLOR} ${dest}"
   if [ -z "$3" ]; then
     rsync -rltvSzhc --delay-updates --progress --exclude=".*" "$repo/" "$dest"
   else
     ignore_flags="${3}"
-    echo -e "\t${HIGHLIGHT_COLOR}Excluding:${NO_COLOR} ${ignore_flags}"
+    echo -e "\\t${HIGHLIGHT_COLOR}Excluding:${NO_COLOR} ${ignore_flags}"
     rsync -rltvSzhc --delay-updates --progress --exclude=".*" $ignore_flags "$repo/" "$dest"
   fi
-  printf "\t" && say_done
+  printf "\\t" && say_done
 }
 
 # Mode methods
